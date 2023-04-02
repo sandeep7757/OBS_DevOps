@@ -1,0 +1,65 @@
+{% extends 'core/base.html' %} {% load humanize %} {% block head_title %}Transaction Report{% endblock %} {% block head_extra %}
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" /> {% endblock %} {% block content %}
+<div class="my-10 py-3 px-4 bg-white rounded-xl shadow-md">
+    <h1 class="font-serif font-bold text-3xl text-center pb-5 pt-2">Loan Report</h1>
+    <hr />
+ 
+    <table class="table-auto mx-auto w-full mt-8 border-collapse">
+        <thead class="bg-gray-800 text-white">
+            <tr class="uppercase font-semibold text-sm">
+                <th class=" border border-black px-4 py-2">Loan Id</th>
+                <th class=" border border-black px-4 py-2">Applyed on</th>
+                <th class=" border border-black px-4 py-2">Name</th>                
+                <th class=" border border-black px-4 py-2">Loan Amount</th>
+                <th class=" border border-black px-4 py-2">EMI</th>
+                <th class=" border border-black px-4 py-2">Purpose of Loan</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in object_list %}
+            <tr class="{% cycle 'bg-gray-300' 'bg-white-100' %}">
+                <td class="border border-blue-900 px-4 py-2"> {{ transaction.id}}</td>
+                <td class="border border-blue-900 px-4 py-2">{{ transaction.apply_time|date:"F d, Y h:i A" }}</td>
+                <td class="border border-blue-900 px-4 py-2">{{ transaction.full_Name}} </td>
+                <td class="border border-blue-900 px-4 py-2">$ {{ transaction.loan_amount }}</td>
+                <td class="border border-blue-900 px-4 py-2 text-right"> {{ transaction.loan_emi}}</td>
+                <td class="border border-blue-900 px-4 py-2 text-right"> {{ transaction.loan_purpose }}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+{% endblock %} {% block footer_extra %}
+<script type="text/javascript">
+    var def_date = '{{request.GET.daterange}}'
+    def_date = def_date == "" ? moment().format("Y-MM-DD") + " - " + moment().format("Y-MM-DD") : def_date
+    var date_split = def_date.split(" - ")
+    var start_date = moment(date_split[0]).format("MM/DD/Y")
+    var end_date = moment(date_split[1]).format("MM/DD/Y")
+    console.log(start_date, end_date)
+    $(function() {
+        $('input[name="daterange"]').daterangepicker({
+            autoUpdateInput: false,
+            startDate: start_date,
+            endDate: end_date,
+            locale: {
+                cancelLabel: "Clear",
+            },
+        });
+
+        $('input[name="daterange"]').on("apply.daterangepicker", function(ev, picker) {
+            $(this).val(picker.startDate.format("YYYY-MM-DD") + " - " + picker.endDate.format("YYYY-MM-DD"));
+            $('#filter').submit()
+        });
+
+        $('input[name="daterange"]').on("cancel.daterangepicker", function(ev, picker) {
+            $(this).val("");
+            $('#filter').submit()
+        });
+    });
+</script>
+{% endblock %}

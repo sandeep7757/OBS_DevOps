@@ -1,0 +1,106 @@
+{% extends 'core/base.html' %} {% load humanize %} {% block head_title %}Transaction Report{% endblock %} {% block head_extra %}
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" /> {% endblock %} {% block content %}
+<div class="my-3 py-3 px-4 bg-white rounded-xl shadow-md">
+    <h1 class="font-mono font-bold text-3xl text-center pb-5 pt-2">Welcome, {{ request.user.first_name }} {{ request.user.last_name }} 🙂</h1>
+    
+    <div class="text-blue-900 my-auto font-black px-5 text-center">Account No. {{request.user.account}}
+
+    </div>
+    <div class="justify-center">
+        <h1 class="text-center">Current Available Balance  $ {{ account.balance|floatformat:2|intcomma }}</h1>  
+        <!-- <h1></h1> -->
+
+  <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto px-10 justify-center" style="margin-top: 10px"  >
+    <div class="flex items-center justify-between mr-4" href="{% url 'transactions:withdraw_money' %}">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+            <a href="{% url 'transactions:deposit_money' %}" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">
+                Deposit
+            </a>
+        </button>
+    </div>
+      
+                   <div class="flex items-center justify-between mr-4" href="{% url 'transactions:withdraw_money' %}">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                        <a href="{% url 'transactions:withdraw_money' %}" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">
+                            Withdraw
+                        </a>
+                    </button>
+                </div>
+
+  </div>
+    </div>
+    <!-- <h1 class="font-serif font-bold text-3xl text-center pb-3 pt-2">Transaction Report</h1>
+    <hr />
+    <form method="get" id="filter">
+        <div class="flex justify-center">
+            <div class="mt-6 h-8 pl-3 pr-2 bg-white border rounded-md border-gray-500 flex justify-between items-center relative  w-4/12">
+                <input type="search" name="daterange" id="search" placeholder="Filter using date range" class="appearance-none w-full outline-none focus:outline-none active:outline-none" autocomplete="off" value="{{ request.GET.daterange}}" />
+                <button type="submit" class="ml-1 outline-none focus:outline-none active:outline-none">
+                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6">
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        {% if form.daterange.errors %} {% for error in form.daterange.errors %}
+        <p class="text-red-600 text-sm italic">{{ error }}</p>
+        {% endfor %} {% endif %}
+    </form>
+    <table class="table-auto mx-auto w-full mt-13 border-collapse">
+        <thead class="bg-gray-800 text-white">
+            <tr class="uppercase font-semibold text-sm">
+                <th class=" border border-black px-4 py-2">Date</th>
+                <th class=" border border-black px-4 py-2">Transaction Type</th>
+                <th class=" border border-black px-4 py-2">Amount</th>
+                <th class=" border border-black px-4 py-2">Balance After Transaction</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in object_list %}
+            <tr class="{% cycle 'bg-gray-300' 'bg-white-100' %}">
+                <td class="border border-blue-900 px-4 py-2">{{ transaction.timestamp|date:"F d, Y h:i A" }}</td>
+                <td class="border border-blue-900 px-4 py-2">{{ transaction.get_transaction_type_display }}</td>
+                <td class="border border-blue-900 px-4 py-2 text-right">$ {{ transaction.amount|floatformat:2|intcomma }}</td>
+                <td class="border border-blue-900 px-4 py-2 text-right">$ {{ transaction.balance_after_transaction|floatformat:2|intcomma }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="bg-gray-600 text-white">
+                <th class="border border-blue-900 px-4 py-2 text-right" colspan="3">Current Balance</th>
+                <th class="border border-blue-900 px-4 py-2 text-right">$ {{ account.balance|floatformat:2|intcomma }}</th>
+            </tr>
+        </tbody>
+    </table> -->
+</div>
+{% endblock %} {% block footer_extra %}
+<script type="text/javascript">
+    var def_date = '{{request.GET.daterange}}'
+    def_date = def_date == "" ? moment().format("Y-MM-DD") + " - " + moment().format("Y-MM-DD") : def_date
+    var date_split = def_date.split(" - ")
+    var start_date = moment(date_split[0]).format("MM/DD/Y")
+    var end_date = moment(date_split[1]).format("MM/DD/Y")
+    console.log(start_date, end_date)
+    $(function() {
+        $('input[name="daterange"]').daterangepicker({
+            autoUpdateInput: false,
+            startDate: start_date,
+            endDate: end_date,
+            locale: {
+                cancelLabel: "Clear",
+            },
+        });
+
+        $('input[name="daterange"]').on("apply.daterangepicker", function(ev, picker) {
+            $(this).val(picker.startDate.format("YYYY-MM-DD") + " - " + picker.endDate.format("YYYY-MM-DD"));
+            $('#filter').submit()
+        });
+
+        $('input[name="daterange"]').on("cancel.daterangepicker", function(ev, picker) {
+            $(this).val("");
+            $('#filter').submit()
+        });
+    });
+</script>
+{% endblock %}

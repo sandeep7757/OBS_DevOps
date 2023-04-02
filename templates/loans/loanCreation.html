@@ -1,0 +1,75 @@
+{% extends 'core/base.html' %} {% block head_title %}{{ title }}{% endblock %} {% block content %}
+
+    <div class="bg-white px-3 py-4 rounded-xl">
+        <h1 class="font-serif font-bold text-3xl text-center pb-5">Loan Application</h1>
+        <hr />
+        <div class="w-full mt-10">
+           <form method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            {% csrf_token %} {% for hidden_field in loan_form.hidden_fields %} {{ hidden_field.errors }} {{ hidden_field }} {% endfor %}
+                <div class="flex flex-wrap -mx-3 mb-6">
+                   
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ loan_form.full_Name.id_for_label }}">
+                            {{ loan_form.full_Name.label }}
+                        </label> {{ loan_form.full_Name }} {% if loan_form.full_Name.errors %} {% for error in loan_form.full_Name.errors %}
+                        <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
+                        {% endfor %} {% endif %}
+                    </div>
+                    
+
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ loan_form.birth_date.id_for_label }}">
+                            {{ loan_form.birth_date.label }}
+                        </label> {{ loan_form.birth_date }} {% if loan_form.birth_date.errors %} {% for error in loan_form.birth_date.errors %}
+                        <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
+                        {% endfor %} {% endif %}
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-6">
+                  
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ loan_form.email.id_for_label }}">
+                            {{ loan_form.email.label }}
+                        </label> {{ loan_form.email }} {% if loan_form.email.errors %} {% for error in loan_form.email.errors %}
+                        <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
+                        {% endfor %} {% endif %}
+                    </div>
+                                      
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ loan_form.email.id_for_label }}">
+                            {{ loan_form.loan_amount.label }}
+                        </label> {{ loan_form.loan_amount }} {% if loan_form.loan_amount.errors %} {% for error in loan_form.loan_amount.errors %}
+                        <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
+                        {% endfor %} {% endif %}
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ loan_form.email.id_for_label }}">
+                            {{ loan_form.loan_purpose.label }}
+                        </label> {{ loan_form.loan_purpose }} {% if loan_form.loan_purpose.errors %} {% for error in loan_form.loan_purpose.errors %}
+                        <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
+                        {% endfor %} {% endif %}
+                    </div>
+                    
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ loan_form.email.id_for_label }}">
+                            {{ loan_form.loan_emi.label }}
+                        </label> {{ loan_form.loan_emi }} {% if loan_form.loan_emi.errors %} {% for error in loan_form.loan_emi.errors %}
+                        <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
+                        {% endfor %} {% endif %}
+                    </div>
+                </div>
+            
+                <input type="checkbox" id="certifycheck" name="certifycheck" required="">
+                <label for="certifycheck">I certify that the information provided is true and accurate to the best of my knowledge. I understand that false or misleading information may result in denial of my loan application</label>
+                <div class="flex items-center justify-between" style="justify-content: center">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                        Apply Now 
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endblock %}
